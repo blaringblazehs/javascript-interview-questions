@@ -422,24 +422,6 @@
 
     **[⬆ Back to Top](#table-of-contents)**
 
-39. ### What are the options in a cookie
-
-    There are few below options available for a cookie,
-
-    1. By default, the cookie is deleted when the browser is closed but you can change this behavior by setting expiry date (in UTC time).
-
-    ```javascript
-    document.cookie = "username=John; expires=Sat, 8 Jun 2019 12:00:00 UTC";
-    ```
-
-    1. By default, the cookie belongs to a current page. But you can tell the browser what path the cookie belongs to using a path parameter.
-
-    ```javascript
-    document.cookie = "username=John; path=/services";
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
 40. ### How do you delete a cookie
 
     You can delete a cookie by setting the expiry date as a passed date. You don't need to specify a cookie value in this case.
@@ -937,20 +919,6 @@
 
     **[⬆ Back to Top](#table-of-contents)**
 
-84. ### What is the purpose of isFinite function
-
-    The isFinite() function is used to determine whether a number is a finite, legal number. It returns false if the value is +infinity, -infinity, or NaN (Not-a-Number), otherwise it returns true.
-
-    ```javascript
-    isFinite(Infinity); // false
-    isFinite(NaN); // false
-    isFinite(-Infinity); // false
-
-    isFinite(100); // true
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
 85. ### What is an event flow
 
     Event flow is the order in which event is received on the web page. When you click an element that is nested in various other elements, before your click actually reaches its destination, or target element, it must trigger the click event for each of its parent elements first, starting at the top with the global window object.
@@ -982,16 +950,6 @@
       document.forms[0].submit();
     }
     ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-92. ### What are the tools or techniques used for debugging JavaScript code
-
-    You can use below tools or techniques for debugging javascript
-
-    1. Chrome Devtools
-    2. debugger statement
-    3. Good old console.log statement
 
     **[⬆ Back to Top](#table-of-contents)**
 
@@ -2471,20 +2429,6 @@
 
      **[⬆ Back to Top](#table-of-contents)**
 
-354. ### How to remove all line breaks from a string
-
-     The easiest approach is using regular expressions to detect and replace newlines in the string. In this case, we use replace function along with string to replace with, which in our case is an empty string.
-
-     ```javascript
-     function remove_linebreaks( var message ) {
-         return message.replace( /[\r\n]+/gm, "" );
-     }
-     ```
-
-     In the above expression, g and m are for global and multiline flags.
-
-     **[⬆ Back to Top](#table-of-contents)**
-
 357. ### What happens if we add two arrays
 
      If you add two arrays together, it will convert them both to strings and concatenate them. For example, the result of adding arrays would be as below,
@@ -2655,25 +2599,6 @@
 
      **[⬆ Back to Top](#table-of-contents)**
 
-397. ### How do you detect primitive or non primitive value type
-
-     In JavaScript, primitive types include boolean, string, number, BigInt, null, Symbol and undefined. Whereas non-primitive types include the Objects. But you can easily identify them with the below function,
-
-     ```javascript
-     var myPrimitive = 30;
-     var myNonPrimitive = {};
-     function isPrimitive(val) {
-       return Object(val) !== val;
-     }
-
-     isPrimitive(myPrimitive);
-     isPrimitive(myNonPrimitive);
-     ```
-
-     If the value is a primitive data type, the Object constructor creates a new wrapper object for the value. But If the value is a non-primitive data type (an object), the Object constructor will give the same object.
-
-     **[⬆ Back to Top](#table-of-contents)**
-
 398. ### What is babel
 
      Babel is a JavaScript transpiler to convert ECMAScript 2015+ code into a backwards compatible version of JavaScript in current and older browsers or environments. Some of the main features are listed below,
@@ -2771,210 +2696,9 @@
 
      **[⬆ Back to Top](#table-of-contents)**
 
-408. ### How do you prevent promises swallowing errors
-
-     While using asynchronous code, JavaScript’s ES6 promises can make your life a lot easier without having callback pyramids and error handling on every second line. But Promises have some pitfalls and the biggest one is swallowing errors by default.
-
-     Let's say you expect to print an error to the console for all the below cases,
-
-     ```javascript
-     Promise.resolve("promised value").then(function () {
-       throw new Error("error");
-     });
-
-     Promise.reject("error value").catch(function () {
-       throw new Error("error");
-     });
-
-     new Promise(function (resolve, reject) {
-       throw new Error("error");
-     });
-     ```
-
-     But there are many modern JavaScript environments that won't print any errors. You can fix this problem in different ways,
-
-     1. **Add catch block at the end of each chain:** You can add catch block to the end of each of your promise chains
-
-        ```javascript
-        Promise.resolve("promised value")
-          .then(function () {
-            throw new Error("error");
-          })
-          .catch(function (error) {
-            console.error(error.stack);
-          });
-        ```
-
-        But it is quite difficult to type for each promise chain and verbose too.
-
-     2. **Add done method:** You can replace first solution's then and catch blocks with done method
-
-        ```javascript
-        Promise.resolve("promised value").done(function () {
-          throw new Error("error");
-        });
-        ```
-
-        Let's say you want to fetch data using HTTP and later perform processing on the resulting data asynchronously. You can write `done` block as below,
-
-        ```javascript
-        getDataFromHttp()
-          .then(function (result) {
-            return processDataAsync(result);
-          })
-          .done(function (processed) {
-            displayData(processed);
-          });
-        ```
-
-        In future, if the processing library API changed to synchronous then you can remove `done` block as below,
-
-        ```javascript
-        getDataFromHttp().then(function (result) {
-          return displayData(processDataAsync(result));
-        });
-        ```
-
-        and then you forgot to add `done` block to `then` block leads to silent errors.
-
-     3. **Extend ES6 Promises by Bluebird:**
-        Bluebird extends the ES6 Promises API to avoid the issue in the second solution. This library has a “default” onRejection handler which will print all errors from rejected Promises to stderr. After installation, you can process unhandled rejections
-
-        ```javascript
-        Promise.onPossiblyUnhandledRejection(function (error) {
-          throw error;
-        });
-        ```
-
-        and discard a rejection, just handle it with an empty catch
-
-        ```javascript
-        Promise.reject("error value").catch(function () {});
-        ```
-
-     **[⬆ Back to Top](#table-of-contents)**
-
-412. ### How do you check an object is a promise or not
-
-     If you don't know if a value is a promise or not, wrapping the value as `Promise.resolve(value)` which returns a promise
-
-     ```javascript
-     function isPromise(object) {
-       if (Promise && Promise.resolve) {
-         return Promise.resolve(object) == object;
-       } else {
-         throw "Promise not supported in your environment";
-       }
-     }
-
-     var i = 1;
-     var promise = new Promise(function (resolve, reject) {
-       resolve();
-     });
-
-     console.log(isPromise(i)); // false
-     console.log(isPromise(promise)); // true
-     ```
-
-     Another way is to check for `.then()` handler type
-
-     ```javascript
-     function isPromise(value) {
-       return Boolean(value && typeof value.then === "function");
-     }
-     var i = 1;
-     var promise = new Promise(function (resolve, reject) {
-       resolve();
-     });
-
-     console.log(isPromise(i)); // false
-     console.log(isPromise(promise)); // true
-     ```
-
-     **[⬆ Back to Top](#table-of-contents)**
-
-414. ### What are the differences between arguments object and rest parameter
-
-     There are three main differences between arguments object and rest parameters
-
-     1. The arguments object is an array-like but not an array. Whereas the rest parameters are array instances.
-     2. The arguments object does not support methods such as sort, map, forEach, or pop. Whereas these methods can be used in rest parameters.
-     3. The rest parameters are only the ones that haven’t been given a separate name, while the arguments object contains all arguments passed to the function
-
-     **[⬆ Back to Top](#table-of-contents)**
-
 415. ### What are the differences between spread operator and rest parameter
 
      Rest parameter collects all remaining elements into an array. Whereas Spread operator allows iterables( arrays / objects / strings ) to be expanded into single arguments/elements. i.e, Rest parameter is opposite to the spread operator.
-
-     **[⬆ Back to Top](#table-of-contents)**
-
-416. ### What are the different kinds of generators
-
-     There are five kinds of generators,
-
-     1. **Generator function declaration:**
-
-        ```javascript
-        function* myGenFunc() {
-          yield 1;
-          yield 2;
-          yield 3;
-        }
-        const genObj = myGenFunc();
-        ```
-
-     2. **Generator function expressions:**
-
-        ```javascript
-        const myGenFunc = function* () {
-          yield 1;
-          yield 2;
-          yield 3;
-        };
-        const genObj = myGenFunc();
-        ```
-
-     3. **Generator method definitions in object literals:**
-
-        ```javascript
-        const myObj = {
-          *myGeneratorMethod() {
-            yield 1;
-            yield 2;
-            yield 3;
-          },
-        };
-        const genObj = myObj.myGeneratorMethod();
-        ```
-
-     4. **Generator method definitions in class:**
-
-        ```javascript
-        class MyClass {
-          *myGeneratorMethod() {
-            yield 1;
-            yield 2;
-            yield 3;
-          }
-        }
-        const myObject = new MyClass();
-        const genObj = myObject.myGeneratorMethod();
-        ```
-
-     5. **Generator as a computed property:**
-
-        ```javascript
-        const SomeObj = {
-          *[Symbol.iterator]() {
-            yield 1;
-            yield 2;
-            yield 3;
-          },
-        };
-
-        console.log(Array.from(SomeObj)); // [ 1, 2, 3 ]
-        ```
 
      **[⬆ Back to Top](#table-of-contents)**
 
@@ -3141,31 +2865,6 @@
 
      **[⬆ Back to Top](#table-of-contents)**
 
-431. ### How do you create custom HTML element?
-
-     The creation of custom HTML elements involves two main steps,
-
-     1. **Define your custom HTML element:** First you need to define some custom class by extending HTMLElement class.
-        After that define your component properties (styles,text etc) using `connectedCallback` method.
-        **Note:** The browser exposes a function called `customElements.define` inorder to reuse the element.
-        ```javascript
-        class CustomElement extends HTMLElement {
-          connectedCallback() {
-            this.innerHTML = "This is a custom element";
-          }
-        }
-        customElements.define("custom-element", CustomElement);
-        ```
-     2. **Use custome element just like other HTML element:** Declare your custom element as a HTML tag.
-
-     ```javascript
-        <body>
-             <custom-element>
-        </body>
-     ```
-
-     **[⬆ Back to Top](#table-of-contents)**
-
 432. ### What is global execution context?
 
      The global execution context is the default or first execution context that is created by the JavaScript engine before any code is executed(i.e, when the file first loads in the browser). All the global code that is not inside a function or object will be executed inside this global execution context. Since JS engine is single threaded there will be only one global environment and there will be only one global execution context.
@@ -3264,7 +2963,7 @@
      });
      ```
 
-### Coding Exercise
+# Coding Exercise
 
 #### 1. What is the output of below code
 
